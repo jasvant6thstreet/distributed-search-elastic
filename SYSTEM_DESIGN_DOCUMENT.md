@@ -110,7 +110,6 @@ The Distributed Document Search Service is a three-tier application:
 | Security | Spring Security | 3.2.0 | Authentication/Authorization |
 | JWT | jjwt | 0.12.3 | Token generation |
 | Rate Limiting | Guava | 32.1.3 | Request throttling |
-| Caching | Caffeine | 3.1.8 | Query result cache |
 | Metrics | Micrometer | Latest | Performance monitoring |
 | Load Balancer | Nginx | Alpine | Request distribution |
 | Containerization | Docker | Latest | Deployment |
@@ -200,28 +199,27 @@ The Distributed Document Search Service is a three-tier application:
 | **DTO** | Data transfer | Clean API contracts |
 | **Builder** | Object construction | Fluent API |
 | **Strategy** | Search algorithms | Pluggable scoring |
-| **Circuit Breaker** | Fault isolation | Resilience |
 | **Bulkhead** | Resource isolation | Prevent cascading failures |
 
 ### 3.3 Logical Architecture
 
 ```
 ┌──────────────────────────────────────────────────────────┐
-│                    API Gateway Layer                      │
-│  ┌────────────┐  ┌─────────────┐  ┌──────────────┐     │
-│  │   Nginx    │→ │JWT Filter   │→ │Rate Limiter  │     │
-│  │Load Balance│  │             │  │              │     │
-│  └────────────┘  └─────────────┘  └──────────────┘     │
+│                    API Gateway Layer                     │
+│  ┌────────────┐  ┌─────────────┐  ┌──────────────┐       │
+│  │   Nginx    │→ │JWT Filter   │→ │Rate Limiter  │       │
+│  │Load Balance│  │             │  │              │       │
+│  └────────────┘  └─────────────┘  └──────────────┘       │
 └──────────────────────┬───────────────────────────────────┘
                        │
 ┌──────────────────────▼───────────────────────────────────┐
-│                 Application Layer                         │
-│  ┌──────────────────────────────────────────────────┐   │
-│  │         ElasticsearchSearchService               │   │
-│  │  ┌────────────┐  ┌──────────────┐  ┌─────────┐ │   │
-│  │  │Index Mgmt  │  │Query Builder │  │Metrics  │ │   │
-│  │  └────────────┘  └──────────────┘  └─────────┘ │   │
-│  └──────────────────────────────────────────────────┘   │
+│                 Application Layer                        │
+│  ┌──────────────────────────────────────────────────┐    │
+│  │         ElasticsearchSearchService               │    │
+│  │  ┌────────────┐  ┌──────────────┐  ┌─────────┐   │    │
+│  │  │Index Mgmt  │  │Query Builder │  │Metrics  │   │    │
+│  │  └────────────┘  └──────────────┘  └─────────┘   │    │
+│  └──────────────────────────────────────────────────┘    │
 └──────────────────────┬───────────────────────────────────┘
                        │
 ┌──────────────────────▼───────────────────────────────────┐

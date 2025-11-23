@@ -4,12 +4,6 @@ Production-grade distributed document search service using **Elasticsearch** as 
 
 ## 🚀 Why Elasticsearch?
 
-### Problems with In-Memory Solution
-- ❌ Data lost on restart
-- ❌ Limited by single machine RAM
-- ❌ Cannot scale beyond one node
-- ❌ No built-in replication
-- ❌ Manual shard management
 
 ### Elasticsearch Advantages
 - ✅ **Persistent Storage**: All data saved to disk
@@ -140,7 +134,7 @@ Response:
 ```bash
 export TOKEN="your-token-here"
 
-curl -X POST http://localhost:8080/api/documents \
+curl -X POST http://localhost:8080/documents \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -155,7 +149,7 @@ curl -X POST http://localhost:8080/api/documents \
 ### 3. Batch Index Documents
 
 ```bash
-curl -X POST http://localhost:8080/api/documents/batch \
+curl -X POST http://localhost:8080/documents/batch \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -402,54 +396,6 @@ Metrics available at http://localhost:8080/actuator/prometheus:
 | **Cost** | Low (RAM) | Medium (Storage) |
 | **Production Ready** | ❌ No | ✅ Yes |
 
-## Troubleshooting
-
-### Elasticsearch not starting
-```bash
-# Check logs
-docker logs elasticsearch-node1
-
-# Common issues:
-# - Insufficient memory (increase Docker RAM)
-# - Port conflicts (change port mapping)
-# - Disk space (clean up old data)
-```
-
-### Connection refused
-```bash
-# Verify Elasticsearch is running
-curl http://localhost:9200/_cluster/health
-
-# Check application.yml host/port settings
-```
-
-### Slow queries
-```bash
-# Check index health
-curl http://localhost:9200/_cat/indices?v
-
-# Optimize indices
-curl -X POST "localhost:9200/search-docs-*/_forcemerge?max_num_segments=1"
-
-# Increase shards or replicas
-```
-
-## Testing
-
-### Run Tests
-```bash
-mvn test
-```
-
-### Load Testing
-```bash
-# Using Apache Bench
-ab -n 10000 -c 100 \
-   -H "Authorization: Bearer TOKEN" \
-   -p search.json \
-   -T application/json \
-   http://localhost:8080/api/search
-```
 
 ## Project Structure
 
@@ -471,39 +417,6 @@ src/main/java/com/search/
 └── service/
     └── ElasticsearchSearchService.java  # Core search logic
 ```
-
-## Advanced Features
-
-### Custom Analyzers
-Configure in index creation:
-```java
-.settings(s -> s
-    .analysis(a -> a
-        .analyzer("custom_analyzer", an -> an
-            .custom(c -> c
-                .tokenizer("standard")
-                .filter("lowercase", "stop", "snowball")
-            )
-        )
-    )
-)
-```
-
-### Aggregations
-```bash
-curl -X POST "localhost:9200/search-docs-*/_search" -H 'Content-Type: application/json' -d'
-{
-  "size": 0,
-  "aggs": {
-    "categories": {
-      "terms": {"field": "metadata.category.keyword"}
-    }
-  }
-}'
-```
-
-### Geo-Search
-Add geo_point field for location-based search.
 
 ## License
 
