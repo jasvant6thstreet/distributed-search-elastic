@@ -1,0 +1,43 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: distributed-search-elasticsearch
+
+# Elasticsearch Configuration
+elasticsearch:
+  host: localhost
+  port: 9200
+  scheme: http
+  username: 
+  password: 
+
+# JWT Configuration
+jwt:
+  secret: your-secret-key-change-in-production-must-be-at-least-256-bits-long-for-security
+  expiration: 86400000  # 24 hours
+
+# Spring Boot Actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,prometheus,metrics,info
+  endpoint:
+    health:
+      show-details: always
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+
+# Logging
+logging:
+  level:
+    com.search: DEBUG
+    org.elasticsearch: WARN
+    co.elastic: WARN
+
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} -JAS %msg%n"

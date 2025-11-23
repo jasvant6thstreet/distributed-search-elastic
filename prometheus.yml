@@ -1,0 +1,21 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    cluster: 'distributed-search-java'
+    environment: 'production'
+
+scrape_configs:
+  - job_name: 'search-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: 
+          - 'search-node-1:8080'
+          - 'search-node-2:8080'
+          - 'search-node-3:8080'
+        labels:
+          service: 'distributed-search'
+          
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
